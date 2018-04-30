@@ -27,7 +27,7 @@
     "extra": {
       "laravel": {
       "providers": [
-        "Yajra\\DataTables\\TableHelperServiceProvider"
+        "Thunderbite\\TableHelper\\TableHelperServiceProvider"
       ],
       "aliases": {
         "DataTables": "Thunderbite\\TableHelper\\\\Facades\\TableHelper"
