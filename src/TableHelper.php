@@ -1,6 +1,6 @@
 <?php
 
-namespace ThunderBite\Helpers;
+namespace Thunderbite\TableHelper;
 
 use Validator;
 use ButtonHelper;

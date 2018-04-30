@@ -23,6 +23,9 @@ class TableHelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->alias('tablehelper', TableHelper::class);
+        $this->app->singleton('tablehelper', function () {
+            return new TableHelper;
+        });
     }
 }

@@ -21,7 +21,18 @@
 
     "autoload": {
 	"psr-4": {
-		"ThunderBite\\TableHelper\\": "src/"
+		"Thunderbite\\TableHelper\\": "src/"
 	}
+    },
+    "extra": {
+      "laravel": {
+      "providers": [
+        "Yajra\\DataTables\\TableHelperServiceProvider"
+      ],
+      "aliases": {
+        "DataTables": "Thunderbite\\TableHelper\\\\Facades\\TableHelper"
+      }
     }
+  }
+
 }
