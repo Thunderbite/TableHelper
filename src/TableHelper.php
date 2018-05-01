@@ -3,7 +3,7 @@
 namespace Thunderbite\TableHelper;
 
 use Validator;
-use ButtonHelper;
+use Thunderbite\TableHelper\ButtonHelper;
 use Schema;
 
 class TableHelper
@@ -20,16 +20,16 @@ class TableHelper
         // Set the Query
         $this->query = $query;
         $columNames = [];
-
+        
         // Validation
-        $this->request = Validator::make(request()->all(), [
+        Validator::make(request()->all(), [
             'start' => 'required|numeric',
             'length' => 'required|numeric',
             'search.value' => 'nullable',
             'order.*.column' => 'nullable|numeric',
             'order.*.dir' => 'nullable|in:desc,asc',
         ])->validate();
-            
+
         if (is_null($this->query->columns)) {
             $columns = Schema::getColumnListing($query->from);    
         } else {
@@ -51,20 +51,20 @@ class TableHelper
         $this->data['recordsTotal'] = $this->query->count();
 
         // Where clauses for searching
-        if (!is_null($this->request['search']['value'])) {
+        if (!is_null(request()->input('search.value'))) {
             $this->query->where(function ($query) use ($columNames) {
                 foreach ($columNames as $column) {
-                    $query->orWhere($column['original'], 'like', '%' . $this->request['search']['value'] . '%');
+                    $query->orWhere($column['original'], 'like', '%' . request()->input('search.value'). '%');
                 }
             });
         }
 
         // Do offset and count
-        $this->query = $this->query->offset($this->request['start']);
-        $this->query = $this->query->limit($this->request['length']);
+        $this->query = $this->query->offset(request()->input('start'));
+        $this->query = $this->query->limit(request()->input('length'));
 
         // Order
-        $this->query = $this->query->orderBy($columNames[$this->request['order'][0]['column']]['name'], $this->request['order'][0]['dir']);
+        $this->query = $this->query->orderBy($columNames[request()->input('order.0.column')]['name'], request()->input('order.0.dir'));
        
         // Count filtered records
         $this->data['recordsFiltered'] = $this->query->count();
