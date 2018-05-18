@@ -13,7 +13,11 @@ class TableHelperServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->publishes([
+            __DIR__.'/../config/tablehelper.php' => config_path('tablehelper.php'),
+        ], 'config');
+
+        $this->mergeConfigFrom(__DIR__.'/../config/tablehelper.php', 'tablehelper');
     }
 
     /**
