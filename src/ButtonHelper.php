@@ -104,12 +104,52 @@ class ButtonHelper
         $selectHref = "/admin/$model/use/$id";
         $cloneHref = "/admin/$model/$id/clone";
 
-        $return = '<div class="btn-group btn-group-sm">';
+        $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
         $return .= '<a href="' . $selectHref . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-play"></i></a>';
         $return .= '<a href="' . $lockHref . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-unlock-alt"></i></a>';
         $return .= '<a href="' . $editHref . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-pencil-alt"></i></a>';
         $return .= '<a href="' . $cloneHref . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-clone"></i></a>';
         $return .= '<a href="' . $destoryHref . '" class="btn btn-default deleteButton" data-method="DELETE"><i class="' . self::$fontawesomeClass . ' fa-trash-alt"></i></a>';
+        $return .= '</div>';
+
+        return $return;
+    }
+
+    public static function groupViewEditDelete($model, $id)
+    {
+        // Setup
+        self::setup();
+
+        // Setup routes
+        $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
+        $return .= '<a href="/'.$model.'/'.$id.'" class="btn btn-default editButton">';
+        $return .= '<i class="' . self::$fontawesomeClass . ' fa-eye"></i>';
+        $return .= '</a>';
+        $return .= '<a href="/'.$model.'/'.$id.'/edit" class="btn btn-default editButton">';
+        $return .= '<i class="' . self::$fontawesomeClass . ' fa-pencil"></i>';
+        $return .= '</a>';
+        $return .= '<a href="/'.$model.'/'.$id.'" class="btn btn-default deleteButton" data-method="DELETE">';
+        $return .= '<i class="' . self::$fontawesomeClass . ' fa-trash-o"></i>';
+        $return .= '</a>';
+
+        $return .= '</div>';
+
+        return $return;
+    }
+
+    public static function groupViewEdit($model, $id)
+    {   
+        // Setup routes
+        $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
+
+        $return .= '<a href="/'.$model.'/'.$id.'" class="btn btn-default editButton">';
+        $return .= '<i class="' . self::$fontawesomeClass . ' fa-eye"></i>';
+        $return .= '</a>';
+
+        $return .= '<a href="/'.$model.'/'.$id.'/edit" class="btn btn-default editButton">';
+        $return .= '<i class="' . self::$fontawesomeClass . ' fa-pencil"></i>';
+        $return .= '</a>';
+
         $return .= '</div>';
 
         return $return;
