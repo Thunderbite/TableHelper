@@ -24,7 +24,7 @@ class ButtonHelper
         self::setup();
 
         // Return html
-        return '<a href="' . URL::route($model . '.log', $id) . '" class="btn btn-default btn-' . self::$bootstrapButtonSize . '"><i class="' . self::$fontawesomeClass . ' fa-eye"></i></a>';
+        return '<a href="/' . request()->segment(1) . '/' . $model . '/log/' . $id . '" class="btn btn-default btn-' . self::$bootstrapButtonSize . '"><i class="' . self::$fontawesomeClass . ' fa-eye"></i></a>';
     }
 
     public static function delete($model, $id)
