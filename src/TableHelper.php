@@ -2,21 +2,19 @@
 
 namespace Thunderbite\TableHelper;
 
-use Validator;
-use Thunderbite\TableHelper\ButtonHelper;
 use Schema;
+use Validator;
 
 class TableHelper
 {
-    protected $columns=[];
+    protected $columns = [];
     protected $data = [];
-    protected $query=null;
+    protected $query = null;
     protected $result = null;
     protected $request = null;
 
     public function __construct($query)
     {
-        
         // Set the Query
         $this->query = $query;
         $columNames = [];
@@ -31,7 +29,7 @@ class TableHelper
         ])->validate();
 
         if (is_null($this->query->columns)) {
-            $columns = Schema::getColumnListing($query->from);    
+            $columns = Schema::getColumnListing($query->from);
         } else {
             $columns = $this->query->columns;
         }
@@ -51,7 +49,7 @@ class TableHelper
         $this->data['recordsTotal'] = $this->query->count();
 
         // Where clauses for searching
-        if (!is_null(request()->input('search.value'))) {
+        if (! is_null(request()->input('search.value'))) {
             $this->query->where(function ($query) use ($columNames) {
                 foreach ($columNames as $column) {
                     $query->orWhere($column['original'], 'like', '%' . request()->input('search.value'). '%');
@@ -59,15 +57,15 @@ class TableHelper
             });
         }
 
+        // Count filtered records
+        $this->data['recordsFiltered'] = $this->query->count();
+
         // Do offset and count
         $this->query = $this->query->offset(request()->input('start'));
         $this->query = $this->query->limit(request()->input('length'));
 
         // Order
         $this->query = $this->query->orderBy($columNames[request()->input('order.0.column')]['name'], request()->input('order.0.dir'));
-       
-        // Count filtered records
-        $this->data['recordsFiltered'] = $this->query->count();
 
         // Run query
         $this->result = $this->query->get()->toArray();
