@@ -45,6 +45,15 @@ class ButtonHelper
         return '<a href="' . URL::route($model . '.edit', $id) . '" class="btn btn-default btn-' . self::$bootstrapButtonSize . '"><i class="' . self::$fontawesomeClass . ' fa-pencil"></i></a>';
     }
 
+    public static function select($model, $id)
+    {
+        // Setup
+        self::setup();
+
+        // Return html
+        return '<a href="' . URL::route($model . '.use', $id) . '" class="btn btn-default btn-' . self::$bootstrapButtonSize . '"><i class="' . self::$fontawesomeClass . ' fa-play"></i></a>';
+    }
+
     public static function groupEditDelete($model, $id)
     {
         // Setup
