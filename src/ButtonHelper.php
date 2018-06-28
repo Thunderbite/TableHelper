@@ -111,16 +111,9 @@ class ButtonHelper
 
         // Setup routes
         $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
-        $return .= '<a href="/'.$model.'/'.$id.'" class="btn btn-default editButton">';
-        $return .= '<i class="' . self::$fontawesomeClass . ' fa-eye"></i>';
-        $return .= '</a>';
-        $return .= '<a href="/'.$model.'/'.$id.'/edit" class="btn btn-default editButton">';
-        $return .= '<i class="' . self::$fontawesomeClass . ' fa-pencil"></i>';
-        $return .= '</a>';
-        $return .= '<a href="/'.$model.'/'.$id.'" class="btn btn-default deleteButton" data-method="DELETE">';
-        $return .= '<i class="' . self::$fontawesomeClass . ' fa-trash-o"></i>';
-        $return .= '</a>';
-
+        $return .= '<a href="' . URL::route($model . '.show', $id) . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-eye fa-fw"></i></a>';
+        $return .= '<a href="' . URL::route($model . '.edit', $id) . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-pencil fa-fw"></i></a>';
+        $return .= '<a href="' . URL::route($model . '.destroy', $id) . '" class="btn btn-default deleteButton" data-method="DELETE"><i class="' . self::$fontawesomeClass . ' fa-trash fa-fw"></i></a>';
         $return .= '</div>';
 
         return $return;
@@ -130,15 +123,8 @@ class ButtonHelper
     {
         // Setup routes
         $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
-
-        $return .= '<a href="/'.$model.'/'.$id.'" class="btn btn-default editButton">';
-        $return .= '<i class="' . self::$fontawesomeClass . ' fa-eye"></i>';
-        $return .= '</a>';
-
-        $return .= '<a href="/'.$model.'/'.$id.'/edit" class="btn btn-default editButton">';
-        $return .= '<i class="' . self::$fontawesomeClass . ' fa-pencil"></i>';
-        $return .= '</a>';
-
+        $return .= '<a href="' . URL::route($model . '.show', $id) . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-eye fa-fw"></i></a>';
+        $return .= '<a href="' . URL::route($model . '.edit', $id) . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-pencil fa-fw"></i></a>';
         $return .= '</div>';
 
         return $return;
