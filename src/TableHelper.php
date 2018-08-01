@@ -18,7 +18,7 @@ class TableHelper
         // Set the Query
         $this->query = $query;
         $columNames = [];
-        
+
         // Validation
         Validator::make(request()->all(), [
             'start' => 'required|numeric',
@@ -28,7 +28,7 @@ class TableHelper
             'order.*.dir' => 'nullable|in:desc,asc',
         ])->validate();
 
-        if (is_null($this->query->columns)) {
+        if (!isset($this->query->columns)) {
             $columns = Schema::getColumnListing($query->from);
         } else {
             $columns = $this->query->columns;
@@ -68,7 +68,7 @@ class TableHelper
         $this->query = $this->query->orderBy($columNames[request()->input('order.0.column')]['name'], request()->input('order.0.dir'));
 
         // Run query
-        $this->result = $this->query->get()->toArray();
+        $this->result = $this->query->get();
 
         $this->data['data'] = $this->result;
     }
@@ -77,12 +77,16 @@ class TableHelper
     {
         return new self($query);
     }
-    
-    public function addColumn($key, $value, $model = null)
+
+    public function addColumn($key, $value, $model = null, $customFields = null)
     {
         if (is_string($value)) {
             foreach ($this->data['data'] as $index => $data) {
-                $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id);
+                if(null !== $customFields){
+                    $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id, $customFields);
+                }else {
+                    $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id);
+                }
             }
         } elseif (is_callable($value)) {
             foreach ($this->data['data'] as $index => $data) {
