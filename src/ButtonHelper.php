@@ -6,8 +6,8 @@ use URL;
 
 class ButtonHelper
 {
-    private static $bootstrapButtonSize = 'sm';
-    private static $fontawesomeClass = 'fas';
+    public static $bootstrapButtonSize = 'sm';
+    public static $fontawesomeClass = 'fas';
 
     public static function setup()
     {
@@ -151,9 +151,10 @@ class ButtonHelper
                 $func = call_user_func_array(array(self::class, $customField['action']), [$model, $id])) {
                 $return .= $func;
             } else {
-                $class = isset($customField['class']) ? $customField['class'] : '';
-                $icon = isset($customField['icon']) ? $customField['icon'] : '';
-                $return .= '<a href="' . URL::route($model . "." . $customField['action'], $id) . '" 
+                $class = $customField['class'] ?? '';
+                $icon = $customField['icon'] ?? '';
+                $actionURL = $customField['actionURL'] ?? URL::route($model . "." . $customField['action'], $id);
+                $return .= '<a href="' . $actionURL . '" 
                 class="btn btn-default ' . $class . '"><i class="' . self::$fontawesomeClass . $icon . '"></i></a>';
             }
         }
