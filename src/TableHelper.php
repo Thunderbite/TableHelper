@@ -29,6 +29,9 @@ class TableHelper
         ])->validate();
 
         if (!isset($this->query->columns)) {
+            if(!isset($query->from) || empty($query->from)){
+                $query->from = $query->getModel()->getTable();
+            }
             $columns = Schema::getColumnListing($query->from);
         } else {
             $columns = $this->query->columns;
