@@ -29,7 +29,7 @@ class TableHelper
         ])->validate();
 
         if (!isset($this->query->columns)) {
-            if(!isset($query->from) || empty($query->from)){
+            if (!isset($query->from) || empty($query->from)) {
                 $query->from = $query->getModel()->getTable();
             }
             $columns = Schema::getColumnListing($query->from);
@@ -52,10 +52,10 @@ class TableHelper
         $this->data['recordsTotal'] = $this->query->count();
 
         // Where clauses for searching
-        if (! is_null(request()->input('search.value'))) {
+        if (!is_null(request()->input('search.value'))) {
             $this->query->where(function ($query) use ($columNames) {
                 foreach ($columNames as $column) {
-                    $query->orWhere($column['original'], 'like', '%' . request()->input('search.value'). '%');
+                    $query->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
                 }
             });
         }
@@ -68,7 +68,8 @@ class TableHelper
         $this->query = $this->query->limit(request()->input('length'));
 
         // Order
-        $this->query = $this->query->orderBy($columNames[request()->input('order.0.column')]['name'], request()->input('order.0.dir'));
+        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
+        $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
 
         // Run query
         $this->result = $this->query->get();
@@ -85,9 +86,9 @@ class TableHelper
     {
         if (is_string($value)) {
             foreach ($this->data['data'] as $index => $data) {
-                if(null !== $customFields){
+                if (null !== $customFields) {
                     $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id, $customFields);
-                }else {
+                } else {
                     $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id);
                 }
             }
