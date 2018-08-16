@@ -68,7 +68,7 @@ class TableHelper
         $this->query = $this->query->limit(request()->input('length'));
 
         // Order
-        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
+        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
         $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
 
         // Run query
