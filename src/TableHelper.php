@@ -106,7 +106,7 @@ class TableHelper
     {
         // Loop over all data and change a column if needed
         foreach ($this->data['data'] as $index => $data) {
-            if (property_exists($data, $key)) {
+            if (isset($data->{$key})) {
                 $this->data['data'][$index]->$key = $function($data);
             }
         }
