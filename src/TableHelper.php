@@ -69,7 +69,8 @@ class TableHelper
 
         // Order
         $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
-        $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
+        if ('0' !== $orderName)
+            $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
 
         // Run query
         $this->result = $this->query->get();
