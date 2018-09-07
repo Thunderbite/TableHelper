@@ -2,6 +2,7 @@
 
 namespace Thunderbite\TableHelper;
 
+use Illuminate\Database\QueryException;
 use Schema;
 use Validator;
 
@@ -49,8 +50,11 @@ class TableHelper
         }
 
         // Set vars
-        $this->data['recordsTotal'] = $this->query->count();
-
+        try {
+            $this->data['recordsTotal'] = $this->query->count();
+        }catch (QueryException $e){
+            $this->data['recordsTotal'] = $this->query->get()->count();
+        }
         // Where clauses for searching
         if (!is_null(request()->input('search.value'))) {
             $this->query->where(function ($query) use ($columNames) {
@@ -61,7 +65,11 @@ class TableHelper
         }
 
         // Count filtered records
-        $this->data['recordsFiltered'] = $this->query->count();
+        try {
+            $this->data['recordsFiltered'] = $this->query->count();
+        }catch (QueryException $e){
+            $this->data['recordsFiltered'] = $this->query->get()->count();
+        }
 
         // Do offset and count
         $this->query = $this->query->offset(request()->input('start'));
