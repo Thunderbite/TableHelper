@@ -63,18 +63,18 @@ class TableHelper
                 if ($columnInput['searchable'] == 'true') {
                     $eagerLoad = explode('.', $columnInput['name']);
                     if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
-                        try{
-                            if($query->getModel()->{$eagerLoad[0]}()) {
-                                $query->orWhereHas($eagerLoad[0], function ($q) use($eagerLoad) {
+                        try {
+                            if ($query->getModel()->{$eagerLoad[0]}()) {
+                                $query->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad) {
                                     $q->where($eagerLoad[1], 'like', '%' . request()->input('search.value') . '%');
                                 });
                             }
-                        }catch (\Exception $e){
+                        } catch (\Exception $e) {
                             continue;
                         }
-                    }else{
-                        foreach ($columNames as $column){ //if its not, check if column exists
-                            if($eagerLoad[0] === $column['original']){
+                    } else {
+                        foreach ($columNames as $column) { //if its not, check if column exists
+                            if ($eagerLoad[0] === $column['original']) {
                                 $query->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
                             }
                         }
@@ -100,9 +100,16 @@ class TableHelper
         $this->query = $this->query->limit(request()->input('length'));
 
         // Order
-        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
-        if ('0' !== $orderName)
-            $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
+        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
+        if ('0' !== $orderName && !empty($orderName)) {
+            $eagerLoad = explode('.', $orderName);
+            if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
+                $related = $this->query->getModel()->{$eagerLoad[0]}();
+                $this->query->join($related->getRelated()->getTable(), $related->getQualifiedParentKeyName(), '=', $related->getQualifiedForeignKeyName())
+                    ->orderBy($related->getRelated()->getTable() . '.' . $eagerLoad[1], request()->input('order.0.dir'));
+            } else
+                $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
+        }
 
         // Run query
         $this->result = $this->query->get();
