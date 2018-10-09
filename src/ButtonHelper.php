@@ -155,7 +155,7 @@ class ButtonHelper
                 $icon = $customField['icon'] ?? '';
                 $actionURL = $customField['actionURL'] ?? URL::route($model . "." . $customField['action'], $id);
                 $return .= '<a href="' . $actionURL . '" 
-                class="btn btn-default ' . $class . '"><i class="' . self::$fontawesomeClass . $icon . '"></i></a>';
+                class="btn btn-default ' . $class . '"><i class="' . self::$fontawesomeClass . ' ' . $icon . '"></i></a>';
             }
         }
         $return .= '</div>';
