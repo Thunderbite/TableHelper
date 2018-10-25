@@ -130,6 +130,9 @@ class ButtonHelper
 
     public static function groupViewEdit($model, $id)
     {
+        // Setup
+        self::setup();
+
         // Setup routes
         $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
         $return .= '<a href="' . URL::route($model . '.show', $id) . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-eye fa-fw"></i></a>';
