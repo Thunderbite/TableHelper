@@ -130,6 +130,9 @@ class ButtonHelper
 
     public static function groupViewEdit($model, $id)
     {
+        // Setup
+        self::setup();
+        
         // Setup routes
         $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
         $return .= '<a href="' . URL::route($model . '.show', $id) . '" class="btn btn-default editButton"><i class="' . self::$fontawesomeClass . ' fa-eye fa-fw"></i></a>';
@@ -148,7 +151,7 @@ class ButtonHelper
         $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
         foreach ($customFields as $customField) {
             if (method_exists(self::class, $customField['action']) &&
-                $func = call_user_func_array(array(self::class, $customField['action']), [$model, $id])) {
+                $func = call_user_func_array([self::class, $customField['action']], [$model, $id])) {
                 $return .= $func;
             } else {
                 $class = $customField['class'] ?? '';
