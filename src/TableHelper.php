@@ -101,6 +101,9 @@ class TableHelper
 
         // Order
         $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
+        if('0' === $orderName || empty($orderName)){
+            $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
+        }
         if ('0' !== $orderName && !empty($orderName)) {
             $eagerLoad = explode('.', $orderName);
             if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
