@@ -151,7 +151,7 @@ class ButtonHelper
         $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
         foreach ($customFields as $customField) {
             if (method_exists(self::class, $customField['action']) &&
-                $func = call_user_func_array(array(self::class, $customField['action']), [$model, $id])) {
+                $func = call_user_func_array([self::class, $customField['action']], [$model, $id])) {
                 $return .= $func;
             } else {
                 $class = $customField['class'] ?? '';
