@@ -56,34 +56,30 @@ class TableHelper
             $this->data['recordsTotal'] = $this->query->get()->count();
         }
         // Where clauses for searching
-        if (!is_null(request()->input('search.value'))) {
+        if (null !== request()->input('search.value')) {
             $columnsInput = request()->input('columns'); //all columns definitions passed from DT
-            $searchableColumns = [];
-            foreach ($columnsInput as $columnInput) { //check if column can be searched and if actually exists
-                if ($columnInput['searchable'] == 'true') {
-                    $eagerLoad = explode('.', $columnInput['name']);
-                    if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
-                        try {
-                            if ($query->getModel()->{$eagerLoad[0]}()) {
-                                $query->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad) {
-                                    $q->where($eagerLoad[1], 'like', '%' . request()->input('search.value') . '%');
-                                });
+            $query->where(function ($locQuery) use ($columnsInput, $columNames, $query) {
+                foreach ($columnsInput as $columnInput) { //check if column can be searched and if actually exists
+                    if ($columnInput['searchable'] == 'true') {
+                        $eagerLoad = explode('.', $columnInput['name']);
+                        if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
+                            try {
+                                if ($query->getModel()->{$eagerLoad[0]}()) {
+                                    $locQuery->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad) {
+                                        $q->where($eagerLoad[1], 'like', '%' . request()->input('search.value') . '%');
+                                    });
+                                }
+                            } catch (\Exception $e) {
+                                continue;
                             }
-                        } catch (\Exception $e) {
-                            continue;
-                        }
-                    } else {
-                        foreach ($columNames as $column) { //if its not, check if column exists
-                            if ($eagerLoad[0] === $column['original']) {
-                                $query->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
+                        } else {
+                            foreach ($columNames as $column) { //if its not, check if column exists
+                                if ($eagerLoad[0] === $column['original']) {
+                                    $locQuery->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
+                                }
                             }
                         }
                     }
-                }
-            }
-            $this->query->where(function ($query) use ($columNames) {
-                foreach ($columNames as $column) {
-                    $query->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
                 }
             });
         }
@@ -116,7 +112,6 @@ class TableHelper
 
         // Run query
         $this->result = $this->query->get();
-
         $this->data['data'] = $this->result;
     }
 
