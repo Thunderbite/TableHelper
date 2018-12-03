@@ -66,7 +66,7 @@ class TableHelper
                             try {
                                 if ($query->getModel()->{$eagerLoad[0]}()) {
                                     $locQuery->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad) {
-                                        $q->where($eagerLoad[1], 'like', request()->input('search.value') . '%');
+                                        $q->where($eagerLoad[1], 'like', '%' . request()->input('search.value') . '%');
                                     });
                                 }
                             } catch (\Exception $e) {
@@ -75,7 +75,7 @@ class TableHelper
                         } else {
                             foreach ($columNames as $column) { //if its not, check if column exists
                                 if ($eagerLoad[0] === $column['original']) {
-                                    $locQuery->orWhere($column['original'], 'like', request()->input('search.value') . '%');
+                                    $locQuery->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
                                 }
                             }
                         }
@@ -96,19 +96,7 @@ class TableHelper
         $this->query = $this->query->limit(request()->input('length'));
 
         // Order
-        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
-        if ('0' === $orderName || empty($orderName)) {
-            $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
-        }
-        if ('0' !== $orderName && !empty($orderName)) {
-            $eagerLoad = explode('.', $orderName);
-            if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
-                $related = $this->query->getModel()->{$eagerLoad[0]}();
-                $this->query->join($related->getRelated()->getTable(), $related->getQualifiedParentKeyName(), '=', $related->getQualifiedForeignKeyName())
-                    ->orderBy($related->getRelated()->getTable() . '.' . $eagerLoad[1], request()->input('order.0.dir'));
-            } else
-                $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
-        }
+        $this->orderColumns();
 
         // Run query
         $this->result = $this->query->get();
@@ -157,5 +145,31 @@ class TableHelper
     {
         // Return json
         return $this->data;
+    }
+
+    private function orderColumns()
+    {
+        $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
+        if ('0' === $orderName || empty($orderName)) {
+            $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
+        }
+        if ('0' !== $orderName && !empty($orderName)) {
+            $eagerLoad = explode('.', $orderName);
+            if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
+                $related = $this->query->getModel()->{$eagerLoad[0]}();
+                $model = explode('\\', get_class($related));
+                $relationName = $model[count($model) - 1];
+                if (in_array($relationName, ['BelongsTo', 'BelongsToMany'])) {
+                    $keyOne = $related->getRelated()->getTable() . '.' . $related->getRelated()->getKeyName();
+                    $keyTwo = $this->query->getModel()->getTable() . '.' . $related->getForeignKey();
+                } else {
+                    $keyOne = $related->getQualifiedParentKeyName();
+                    $keyTwo = $related->getQualifiedForeignKeyName();
+                }
+                $this->query->join($related->getRelated()->getTable(), $keyOne, '=', $keyTwo)
+                    ->orderBy($related->getRelated()->getTable() . '.' . $eagerLoad[1], request()->input('order.0.dir'));
+            } else
+                $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
+        }
     }
 }
