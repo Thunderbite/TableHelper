@@ -66,7 +66,7 @@ class TableHelper
                             try {
                                 if ($query->getModel()->{$eagerLoad[0]}()) {
                                     $locQuery->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad) {
-                                        $q->where($eagerLoad[1], 'like', '%' . request()->input('search.value') . '%');
+                                        $q->where($eagerLoad[1], 'like', request()->input('search.value') . '%');
                                     });
                                 }
                             } catch (\Exception $e) {
@@ -75,7 +75,7 @@ class TableHelper
                         } else {
                             foreach ($columNames as $column) { //if its not, check if column exists
                                 if ($eagerLoad[0] === $column['original']) {
-                                    $locQuery->orWhere($column['original'], 'like', '%' . request()->input('search.value') . '%');
+                                    $locQuery->orWhere($column['original'], 'like', request()->input('search.value') . '%');
                                 }
                             }
                         }
@@ -97,7 +97,7 @@ class TableHelper
 
         // Order
         $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
-        if('0' === $orderName || empty($orderName)){
+        if ('0' === $orderName || empty($orderName)) {
             $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
         }
         if ('0' !== $orderName && !empty($orderName)) {
