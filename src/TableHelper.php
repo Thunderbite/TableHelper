@@ -172,30 +172,4 @@ class TableHelper
                 $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
         }
     }
-
-    private function escapeValues(){
-        foreach ($this->result as &$record) {
-            if (is_object($record)) {
-                if(method_exists($record, 'getAttributes')){
-                    $vars = $record->getAttributes();
-                }else{
-                    $vars = get_object_vars($record);
-                }
-                foreach ($vars as $key => $value) {
-                    $record->$key = htmlentities($value, ENT_QUOTES, 'UTF-8');
-                }
-
-            } else {
-                foreach ($record as $key => $value) {
-                    if (!is_array($record{$key})) {
-                        $record{$key} = htmlentities($value, ENT_QUOTES, 'UTF-8');
-                    } else {
-                        foreach ($record{$key} as $inKey => $inValue) {
-                            $record{$key}{$inKey} = htmlentities($inValue, ENT_QUOTES, 'UTF-8');
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
