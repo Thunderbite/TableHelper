@@ -3,6 +3,7 @@
 namespace Thunderbite\TableHelper;
 
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Schema;
 use Validator;
 
@@ -50,11 +51,13 @@ class TableHelper
         }
 
         // Set vars
-        try {
-            $this->data['recordsTotal'] = $this->query->count();
-        } catch (QueryException $e) {
-            $this->data['recordsTotal'] = $this->query->get()->count();
+        if ($this->query instanceof \Illuminate\Database\Eloquent\Builder) {
+            $q = $query->getQuery();
         }
+        $this->data['recordsTotal'] =  $this->data['recordsFiltered'] = DB::table(DB::raw("({$this->query->toSql()}) as sub"))
+            ->mergeBindings($q ?? $this->query)
+            ->count();
+
         // Where clauses for searching
         if (null !== request()->input('search.value')) {
             $columnsInput = request()->input('columns'); //all columns definitions passed from DT
@@ -82,13 +85,14 @@ class TableHelper
                     }
                 }
             });
-        }
 
-        // Count filtered records
-        try {
-            $this->data['recordsFiltered'] = $this->query->count();
-        } catch (QueryException $e) {
-            $this->data['recordsFiltered'] = $this->query->get()->count();
+            // Count filtered records
+            if ($this->query instanceof \Illuminate\Database\Eloquent\Builder) {
+                $q = $query->getQuery();
+            }
+            $this->data['recordsFiltered'] = DB::table(DB::raw("({$this->query->toSql()}) as sub"))
+                ->mergeBindings($q ?? $this->query)
+                ->count();
         }
 
         // Do offset and count
