@@ -14,9 +14,11 @@ class TableHelper
     protected $query = null;
     protected $result = null;
     protected $request = null;
+    private $button_helper = null;
 
     public function __construct($query)
     {
+        $this->button_helper = config('tablehelper.button_helper') ?? ButtonHelper::class;
         // Set the Query
         $this->query = $query;
         $columNames = [];
@@ -114,12 +116,14 @@ class TableHelper
 
     public function addColumn($key, $value, $model = null, $customFields = null)
     {
+        // Dynamically identify button helper from config
+        $button_helper = $this->button_helper;
         if (is_string($value)) {
             foreach ($this->data['data'] as $index => $data) {
                 if (null !== $customFields) {
-                    $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id, $customFields);
+                    $this->data['data'][$index]->$key = $button_helper::$value($model, $data->id, $customFields);
                 } else {
-                    $this->data['data'][$index]->$key = ButtonHelper::$value($model, $data->id);
+                    $this->data['data'][$index]->$key = $button_helper::$value($model, $data->id);
                 }
             }
         } elseif (is_callable($value)) {
