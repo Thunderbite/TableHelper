@@ -112,7 +112,22 @@ class ButtonHelper
 
         return $return;
     }
+    
+    public static function groupEditCloneDelete($model, $id)
+    {
+        // Setup
+        self::setup();
 
+        // Return html
+        $return = '<div class="btn-group btn-group-' . self::$bootstrapButtonSize . '">';
+        $return .= '<a href="' . URL::route($model . '.edit', $id) . '" class="btn btn-default"><i class="' . self::$fontawesomeClass . ' fa-pencil"></i></a>';
+        $return .= '<a href="' . URL::route($model . '.destroy', $id) . '" class="btn btn-default" data-method="DELETE"><i class="' . self::$fontawesomeClass . ' fa-trash"></i></a>';
+        $return .= '<a href="' . URL::route($model . '.clone', $id) . '" class="btn btn-default cloneButton" data-method="CLONE"><i class="' . self::$fontawesomeClass . ' fa-clone fa-fw"></i></a>';
+        $return .= '</div>';
+
+        return $return;
+    }
+    
     public static function groupViewEditDelete($model, $id)
     {
         // Setup
