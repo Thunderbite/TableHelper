@@ -65,13 +65,18 @@ class TableHelper
             $columnsInput = request()->input('columns'); //all columns definitions passed from DT
             $query->where(function ($locQuery) use ($columnsInput, $columNames, $query) {
                 foreach ($columnsInput as $columnInput) { //check if column can be searched and if actually exists
-                    if ($columnInput['searchable'] == 'true') {
+                    if ($columnInput['searchable'] == 'true' || $columnInput['searchable'] == 'exact') {
                         $eagerLoad = explode('.', $columnInput['name']);
-                        if (!empty($eagerLoad[1])) { // check if eager loaded { table.column }
+                        if (!empty($eagerLoad[1])) {
+                            // check if eager loaded { table.column }
                             try {
                                 if ($query->getModel()->{$eagerLoad[0]}()) {
-                                    $locQuery->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad) {
-                                        $q->where($eagerLoad[1], 'like', request()->input('search.value') . '%');
+                                    $locQuery->orWhereHas($eagerLoad[0], function ($q) use ($eagerLoad, $columnInput) {
+                                        if ($columnInput['searchable'] == 'exact') {
+                                            $q->where($eagerLoad[1], request()->input('search.value'));
+                                        } else {
+                                            $q->where($eagerLoad[1], 'like', request()->input('search.value') . '%');
+                                        }
                                     });
                                 }
                             } catch (\Exception $e) {
@@ -80,7 +85,12 @@ class TableHelper
                         } else {
                             foreach ($columNames as $column) { //if its not, check if column exists
                                 if ($eagerLoad[0] === $column['original']) {
-                                    $locQuery->orWhere($column['original'], 'like', request()->input('search.value') . '%');
+                                    if ($columnInput['searchable'] == 'exact') {
+                                        $locQuery->orWhere($column['original'], request()->input('search.value'));
+                                    } else {
+                                        $locQuery->orWhere($column['original'], 'like', request()->input('search.value') . '%');
+                                    }
+
                                 }
                             }
                         }
