@@ -175,9 +175,11 @@ class TableHelper
                     $keyTwo = $related->getQualifiedForeignKeyName();
                 }
                 $this->query->join($related->getRelated()->getTable(), $keyOne, '=', $keyTwo)
-                    ->orderBy($related->getRelated()->getTable() . '.' . $eagerLoad[1], request()->input('order.0.dir'));
+                    ->orderBy($related->getRelated()->getTable() . '.' . $eagerLoad[1], request()->input('order.0.dir'))
+                        ->orderBy($related->getRelated()->getTable() . '.' .'id',request()->input('order.0.dir'));
             } else
-                $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'));
+                $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'))
+                    ->orderBy('id',request()->input('order.0.dir'));
         }
     }
 }
