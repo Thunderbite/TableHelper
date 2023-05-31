@@ -179,7 +179,7 @@ class TableHelper
                         ->orderBy($related->getRelated()->getTable() . '.' .'id',request()->input('order.0.dir'));
             } else
                 $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'))
-                    ->orderBy('id',request()->input('order.0.dir'));
+                    ->orderBy($this->query->getModel()->getTable() . '.id',request()->input('order.0.dir'));
         }
     }
 }
