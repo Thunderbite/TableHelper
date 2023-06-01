@@ -157,6 +157,7 @@ class TableHelper
 
     private function orderColumns()
     {
+        $tableName = $this->query->getModel()->getTable();
         $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
         if ('0' === $orderName || empty($orderName)) {
             $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
@@ -179,7 +180,7 @@ class TableHelper
                         ->orderBy($related->getRelated()->getTable() . '.' .'id',request()->input('order.0.dir'));
             } else
                 $this->query = $this->query->orderBy($orderName, request()->input('order.0.dir'))
-                    ->orderBy($this->query->getModel()->getTable() . '.id',request()->input('order.0.dir'));
+                    ->orderBy($this->query->from . '.id',request()->input('order.0.dir'));
         }
     }
 }
