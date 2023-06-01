@@ -157,7 +157,6 @@ class TableHelper
 
     private function orderColumns()
     {
-        $tableName = $this->query->getModel()->getTable();
         $orderName = request()->input('columns.' . request()->input('order.0.column') . '.name');
         if ('0' === $orderName || empty($orderName)) {
             $orderName = request()->input('columns.' . request()->input('order.0.column') . '.data');
