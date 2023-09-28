@@ -21,6 +21,8 @@ class TableHelper
         $this->button_helper = config('tablehelper.button_helper') ?? ButtonHelper::class;
         // Set the Query
         $this->query = $query;
+        $connection = $this->query->getConnection()->getName();
+
         $columNames = [];
 
         // Validation
@@ -56,7 +58,7 @@ class TableHelper
         if ($this->query instanceof \Illuminate\Database\Eloquent\Builder) {
             $q = $query->getQuery();
         }
-        $this->data['recordsTotal'] =  $this->data['recordsFiltered'] = DB::table(DB::raw("({$this->query->toSql()}) as sub"))
+        $this->data['recordsTotal'] =  $this->data['recordsFiltered'] = DB::connection($connection)->table(DB::raw("({$this->query->toSql()}) as sub"))
             ->mergeBindings($q ?? $this->query)
             ->count();
 
@@ -92,7 +94,7 @@ class TableHelper
             if ($this->query instanceof \Illuminate\Database\Eloquent\Builder) {
                 $q = $query->getQuery();
             }
-            $this->data['recordsFiltered'] = DB::table(DB::raw("({$this->query->toSql()}) as sub"))
+            $this->data['recordsFiltered'] = DB::connection($connection)->table(DB::raw("({$this->query->toSql()}) as sub"))
                 ->mergeBindings($q ?? $this->query)
                 ->count();
         }
